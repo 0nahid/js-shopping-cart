@@ -16,6 +16,10 @@ function quantityChange(event) {
     if (isNaN(input.value) || input.value <= 0) {
         input.value = 1;
     }
+    if (input.value >= 11) {
+        input.value = 10;
+        window.alert('One customer can buy maximum 10 similar products in per order. If you need more contact us on support')
+    }
     updateCartTotal()
 }
 
