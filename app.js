@@ -1,50 +1,157 @@
-//Remove item from cart
-var removeCardElement = document.getElementsByClassName('remove-item');
-for (var i = 0; i < removeCardElement.length; i++) {
-    var removeBtn = removeCardElement[i];
-    removeBtn.addEventListener('click', removeCartItem);
-};
-// cart quantity input
-var quantityInputs = document.getElementsByClassName('cart-quantity-input');
-for (var i = 0; i < quantityInputs.length; i++) {
-    var input = quantityInputs[i];
-    input.addEventListener('change', quantityChange)
-}
-
-function quantityChange(event) {
-    var input = event.target;
-    if (isNaN(input.value) || input.value <= 0) {
-        input.value = 1;
+function handleProductChange(product, isIncrease) {
+    const productCount = getInputValue(product);
+    let productNewCount = productCount;
+    if (isIncrease == true) {
+        productNewCount = productCount + 1;
     }
-    if (input.value >= 11) {
-        input.value = 10;
-        window.alert('One customer can buy maximum 10 similar products in per order. If you need more contact us on support')
+    if (isIncrease == false && productCount > 0) {
+        productNewCount = productCount - 1;
     }
-    updateCartTotal()
+    document.getElementById(product + '-count').value = productNewCount;
+    let productTotal = 0;
+    if (product == 'phone') {
+        productTotal = productNewCount * 1219;
+    }
+    if (product == 'case') {
+        productTotal = productNewCount * 59;
+    }
+    document.getElementById(product + '-total').innerText = '$' + productTotal;
+    calculateTotal();
 }
 
 
-function removeCartItem(event) {
-    var removeBtnClicked = event.target;
-    removeBtnClicked.parentElement.parentElement.parentElement.remove();
-    updateCartTotal()
-};
-
-
-// Update cart total
-function updateCartTotal() {
-    var cartItemContainer = document.getElementsByClassName('cart-item')[0];
-    var cartRows = cartItemContainer.getElementsByClassName('cart-row');
-    var total = 0;
-    for (var i = 0; i < cartRows.length; i++) {
-        var cartRow = cartRows[i];
-        var priceElement = cartRow.getElementsByClassName('cart-price')[0];
-        var quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0];
-        var price = parseFloat(priceElement.innerText.replace('$', ''));
-        var quantity = quantityElement.value;
-        total = total + (price * quantity);
-    }
-    total = Math.round(total * 100) / 100;
-    document.getElementsByClassName('sub-total')[0].innerText = '$' + total;
-    document.getElementsByClassName('cart-total-price')[0].innerText = '$' + total;
+function calculateTotal() {
+    const phoneCount = getInputValue('phone');
+    var caseCount = getInputValue('case');
+    const totalPrice = phoneCount * 1219 + caseCount * 59;
+    document.getElementById('total-price').innerText = '$' + totalPrice;
+    const tax = Math.round(totalPrice * 0.05);
+    document.getElementById('tax-amount').innerText = '$' + tax;
+    const grandTotal = totalPrice + tax;
+    document.getElementById('grand-total').innerText = '$' + grandTotal;
 }
+
+function getInputValue(product) {
+    const productInput = document.getElementById(product + '-count');
+    const productCount = parseInt(productInput.value);
+    return productCount;
+}
+
+// Practice
+// function handleProductChange(product, isIncrease) {
+//     // const productInput = document.getElementById(product + '-count');
+//     // const productCount = parseInt(productInput.value);
+//     const productCount = getInputValue(product);
+//     // const caseNewCount = caseCount - 1;
+//     let productNewCount = productCount;
+//     if (isIncrease == true) {
+//         productNewCount = productCount + 1;
+//     }
+//     if (isIncrease == false && productCount > 0) {
+//         productNewCount = productCount - 1;
+//     }
+//     document.getElementById(product + '-count').value = productNewCount;
+//     // const caseTotal = caseNewCount * 59;
+//     let productTotal = 0;
+//     if (product == 'phone') {
+//         productTotal = productNewCount * 1219;
+//     }
+//     if (product == 'case') {
+//         productTotal = productNewCount * 59;
+//     }
+//     document.getElementById(product + '-total').innerText = '$' + productTotal;
+//     calculateTotal();
+// }
+
+// function calculateTotal() {
+//     const phoneInput = document.getElementById('phone-count');
+//     const phoneCount = parseInt(phoneInput.value);
+
+//     const caseInput = document.getElementById('case-count');
+//     const caseCount = parseInt(caseInput.value);
+
+//     const totalPrice = phoneCount * 1219 + caseCount * 59;
+//     document.getElementById('total-price').innerText = '$' + totalPrice;
+// }
+
+// // Increase Button
+// document.getElementById('case-increase').addEventListener('click', function () {
+//     handleProductChange(true);
+// })
+// // Decrease Button
+// document.getElementById('case-decrease').addEventListener('click', function () {
+//     handleProductChange(false);
+// });
+
+// function handleProductChange(isIncrease) {
+//     const caseInput = document.getElementById('case-count');
+//     const caseCount = parseInt(caseInput.value);
+//     // const caseNewCount = caseCount - 1;
+//     let caseNewCount = caseCount;
+//     if (isIncrease == true) {
+//         caseNewCount = caseCount + 1;
+//     }
+//     if (isIncrease == false && caseCount > 1) {
+//         caseNewCount = caseCount - 1;
+//     }
+//     caseInput.value = caseNewCount;
+//     const caseTotal = caseNewCount * 59;
+//     document.getElementById('case-total').innerText = '$' + caseTotal;
+// }
+
+// function handlePhoneChange(isIncreasePhone) {
+//     const phoneInput = document.getElementById('phone-count');
+//     const phoneCount = parseInt(phoneInput.value);
+//     let phoneNewCount = phoneCount;
+//     if (isIncreasePhone == true) {
+//         phoneNewCount = phoneCount + 1;
+//     }
+//     if (isIncreasePhone == false && phoneCount > 1) {
+//         phoneNewCount = phoneCount - 1;
+//     }
+//     phoneInput.value = phoneNewCount;
+//     const phoneTotal = phoneNewCount * 1219;
+//     document.getElementById('phone-total').innerText = '$' + phoneTotal;
+// }
+
+
+// // Phone Increase Button
+// document.getElementById('phone-increase').addEventListener('click', function () {
+//     const phoneInput = document.getElementById('phone-count');
+//     const phoneCount = parseInt(phoneInput.value);
+//     const newPhoneCount = phoneCount + 1;
+//     phoneInput.value = newPhoneCount;
+//     const phoneTotal = newPhoneCount * 1219;
+//     document.getElementById('phone-total').innerText = '$' + phoneTotal;
+// })
+// // Phone Decrease Button
+// document.getElementById('phone-decrease').addEventListener('click', function () { 
+//     const phoneInput = document.getElementById('phone-count');
+//     const phoneCount = parseInt(phoneInput.value);
+//     if(phoneCount > 1){
+//         const newPhoneCount = phoneCount -1;
+//         phoneInput.value = newPhoneCount;
+//         const phoneTotal = newPhoneCount * 1219;
+//         document.getElementById('phone-total').innerText = '$' + phoneTotal;
+//     }
+
+//  })
+
+// // Increase Button
+// document.getElementById('case-increase').addEventListener('click', function () {
+//     const caseInput = document.getElementById('case-count');
+//     const caseCount = parseInt(caseInput.value);
+//     const caseNewCount = caseCount + 1;
+//     caseInput.value = caseNewCount;
+//     const caseTotal = caseNewCount * 59;
+//     document.getElementById('case-total').innerText = '$' + caseTotal;
+// })
+// // Decrease Button
+// document.getElementById('case-decrease').addEventListener('click', function () {
+//     const caseInput = document.getElementById('case-count');
+//     const caseCount = parseInt(caseInput.value);
+//     const caseNewCount = caseCount - 1;
+//     caseInput.value = caseNewCount;
+//     const caseTotal = caseNewCount * 59;
+//     document.getElementById('case-total').innerText = '$' + caseTotal;
+// })
